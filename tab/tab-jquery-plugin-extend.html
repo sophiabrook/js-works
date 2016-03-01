@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="description" content="tab切换 封装成 jquery 插件" />
+  <meta charset="utf-8">
+  <title>tab 切换 jquery 插件的功能扩展</title>
+  <style>
+.mod-tab {
+  border: 1px solid #ccc;
+  width: 302px;
+  margin-top: 30px;
+}
+
+.mod-tab ul,
+.mod-tab li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mod-tab .tabs:after {
+  content: '';
+  height: 0;
+  display: table;
+  clear: both;
+}
+.mod-tab .tabs li {
+  float: left;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+.mod-tab .tabs li:last-child {
+  border-right: none;
+}
+.mod-tab .tabs .active {
+  background: #eee;
+}
+.mod-tab .panel {
+  display: none;
+  height: 180px;
+}
+.mod-tab .panel img{
+  width: 100%;
+}
+.mod-tab .active {
+  display: block;
+}
+
+  </style>
+</head>
+<body>
+ <div class="mod-tab">
+   <ul class="tabs">
+     <li class="active">图片1</li>
+     <li>图片2</li>
+     <li>图片3</li>
+   </ul>
+   <div class="panel active">
+    <img src="" alt="" data-src="http://pic4.zhongsou.com/image/4804784e92718f8a0bc.jpg">
+   </div>
+   <div class="panel">
+     <img src="" alt="" data-src="http://i1.img.969g.com/down/imgx2014/05/30/289_090620_29b0c.jpg">
+   </div>
+   <div class="panel">
+     <img src="" alt="" data-src="http://pic4.zhongsou.com/image/4805c2db3cf9fbecaae.jpg">
+   </div>
+ </div> 
+ <div class="mod-tab">
+   <ul class="tabs">
+     <li class="active">tab1</li>
+     <li>tab2</li>
+     <li>tab3</li>
+   </ul>
+   <div class="panel active">内容1</div>
+   <div class="panel">内容2</div>
+   <div class="panel">内容3</div>
+ </div> 
+<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js
+"></script>
+<script>
+
+  
+  $.fn.Tab = function(handler){
+    //console.log(this); // 这里的this 是用户在 $('.mod-tab').Tab() 时的jquery 对象 $('.mod-tab')
+    var $tabCt = this.find('.tabs'),
+        $tabNodes = $tabCt.children(),
+        $panelNodes,
+        $curPanel;
+
+    $tabNodes.on('click', function(e){
+        var $target = $(this),
+            index = $target.index();
+        $tabNodes.removeClass('active');
+        $target.addClass('active');
+        $panelNodes = $target.parents('.mod-tab').find('.panel');
+        $panelNodes.removeClass('active');
+        $curPanel = $panelNodes.eq(index);
+        $curPanel.addClass('active');
+
+        //如果 handler 处理函数存在，且当前面板没被处理过，那么执行 handler
+        if(handler && !$curPanel.data('inInit')){
+          handler($curPanel);
+          $curPanel.data('isInit', true);
+        }
+    });
+    handler && handler($('.panel.active'));
+    $('.panel.active').data('isInit', true);
+  };
+
+  //调用
+  $('.mod-tab').Tab(function($panel){
+    lazyLoadImg($panel);
+  });
+
+  function lazyLoadImg($ct){
+    $ct.find('img').each(function(){
+      $(this).attr('src', $(this).attr('data-src'));
+    });
+  }
+  
+</script>
+
+</body>
+</html>

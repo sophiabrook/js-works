@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="description" content="tab切换  jquery" />
+  <meta charset="utf-8">
+  <title>tab 切换jquery 实现</title>
+  <style>
+.mod-tab {
+  border: 1px solid #ccc;
+  width: 302px;
+  margin-top: 30px;
+}
+
+.mod-tab ul,
+.mod-tab li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mod-tab .tabs:after {
+  content: '';
+  height: 0;
+  display: table;
+  clear: both;
+}
+.mod-tab .tabs li {
+  float: left;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+.mod-tab .tabs li:last-child {
+  border-right: none;
+}
+.mod-tab .tabs .active {
+  background: #eee;
+}
+.mod-tab .panel {
+  display: none;
+  height: 180px;
+  padding: 20px;
+}
+.mod-tab .active {
+  display: block;
+}
+
+  </style>
+</head>
+<body>
+ <div class="mod-tab">
+   <ul class="tabs">
+     <li class="active">tab1</li>
+     <li>tab2</li>
+     <li>tab3</li>
+   </ul>
+   <div class="panel active">内容1</div>
+   <div class="panel">内容2</div>
+   <div class="panel">内容3</div>
+ </div> 
+ <div class="mod-tab">
+   <ul class="tabs">
+     <li class="active">tab1</li>
+     <li>tab2</li>
+     <li>tab3</li>
+   </ul>
+   <div class="panel active">内容1</div>
+   <div class="panel">内容2</div>
+   <div class="panel">内容3</div>
+ </div> 
+<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js
+"></script>
+<script>
+  
+var $tabCt = $('.tabs'),
+    $tabNodes = $tabCt.children(),
+    $panelNodes;
+
+$tabNodes.on('click', function(e){
+    var $target = $(this),
+        index = $target.index();
+    $tabNodes.removeClass('active');
+    $target.addClass('active');
+    //$panelNodes = $('.panel');    这样写对一个Tab还好，像上面有多个就出现问题了，可以用下面的方式
+    $panelNodes = $target.parents('.mod-tab').find('.panel');    
+    $panelNodes.removeClass('active');
+    $panelNodes.eq(index).addClass('active');
+});
+
+
+
+
+  
+</script>
+
+</body>
+</html>
