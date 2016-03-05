@@ -37,6 +37,98 @@
 <script type="text/javascript">
  $(function(){
 
+ 	function render(){
+
+	  	var nodeWidth = $('.item').outerWidth(true),
+	 		colNum = parseInt($(window).width()/nodeWidth),
+	 		colSumHeight = [];
+
+	 	for(var i = 0; i<colNum;i++){
+	 		colSumHeight.push(0);
+	 	}
+
+	 	$('.item').each(function(){
+	 		var $cur = $(this);
+
+	 		//colSumHeight = [100, 250, 80, 200]
+
+	 		var idx = 0,
+	 			minSumHeight = colSumHeight[0];
+
+	 		for(var i=0;i<colSumHeight.length; i++){
+	 			if(colSumHeight[i] < minSumHeight){
+	 				idx = i;
+	 				minSumHeight = colSumHeight[i];
+	 			}
+	 		}
+
+	 		$cur.css({
+	 			left: nodeWidth*idx,
+	 			top: minSumHeight
+	 		});
+	 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
+	 	});		
+ 	}
+
+ 	render();
+
+ 	$(window).on('resize', function(){
+ 		render();
+ 	})
+ 	 
+
+ 	var water = (function($){
+
+	 	function render(){
+
+		  	var nodeWidth = $('.item').outerWidth(true),
+		 		colNum = parseInt($(window).width()/nodeWidth),
+		 		colSumHeight = [];
+
+		 	for(var i = 0; i<colNum;i++){
+		 		colSumHeight.push(0);
+		 	}
+
+		 	jQuery('.item').each(function(){
+		 		var $cur = $(this);
+
+		 		//colSumHeight = [100, 250, 80, 200]
+
+		 		var idx = 0,
+		 			minSumHeight = colSumHeight[0];
+
+		 		for(var i=0;i<colSumHeight.length; i++){
+		 			if(colSumHeight[i] < minSumHeight){
+		 				idx = i;
+		 				minSumHeight = colSumHeight[i];
+		 			}
+		 		}
+
+		 		$cur.css({
+		 			left: nodeWidth*idx,
+		 			top: minSumHeight
+		 		});
+		 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
+		 	});		
+	 	}
+
+	 	render();
+
+	 	$(window).on('resize', function(){
+	 		render();
+	 	})
+
+
+ 		return {
+ 			init: render
+ 		}
+ 	})(jQuery) 
+
+ 	water.init();
+
+
+
+
 	var WaterFall = {
 
 		//[0,0,0,0]
@@ -103,79 +195,6 @@
 	WaterFall.init($('.content'));
 
 
-
-	var Water = (function(){
-		var WaterFall = {
-
-			//[0,0,0,0]
-			//[20, 10, 30, 15]
-
-			arrColHeight: [],
-
-			init: function( $ct ){
-				this.$ct = $ct;
-				this.$items = $ct.find('.item'),
-				this.itemWidth = this.$items.outerWidth(true);
-
-				this.bind();
-				this.start();
-			},
-
-			bind: function(){
-				var me = this;
-				$(window).on('resize', function(){
-					me.start();
-				});
-			},
-
-			start: function(){
-				var me = this;
-				this.colNum = Math.floor( this.$ct.width() / this.itemWidth );
-				//this.arrColHeight = [];
-				for(var i=0; i<this.colNum; i++){
-					this.arrColHeight[i] = 0;
-				}
-				this.$items.each(function(){
-					me.placeItem( $(this) );
-				});
-			},
-
-			placeItem: function( $el ) {
-				// 1. 找到arrColHeight的最小值，得到是第几列
-				// 2. 元素left的值是 列数*宽度
-				// 3. 元素top的值是 最小值
-				// 4. 放置元素的位置，把arrColHeight对应的列数的值加上当前元素的高度
-				var obj = this.getIndexOfMin(this.arrColHeight),
-					idx = obj.idx,
-					min = obj.min;
-				$el.css({
-					left: idx * this.itemWidth,
-					top: min
-				});
-				this.arrColHeight[idx] += $el.outerHeight(true);
-			},
-
-			getIndexOfMin: function( arr ){
-				var min = arr[0],
-					idx = 0;
-				for(var i = 1; i< arr.length; i++){
-					if(min > arr[i]){
-						min = arr[i];
-						idx = i;
-					}
-				}
-				return {min: min, idx: idx};
-			}
-		}
-
-		return {
-			init: WaterFall.init
-		}
-	})()
-
-
-
-
  });
 
 
@@ -208,7 +227,7 @@
 			<div class="item h2">
 				8
 			</div>
-			<div class="item h1">
+<!--			<div class="item h1">
 				9
 			</div>
 			<div class="item h3">
@@ -226,6 +245,7 @@
 			<div class="item h2">
 				14
 			</div>
+		-->
 			<div id="load-more"></div>
 		</div>
 

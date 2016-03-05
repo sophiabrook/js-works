@@ -70,7 +70,7 @@
     			</p>
     		</li>-->
     	</ul>
-    	<div id="load">我是看不见的</div>
+    	<div id="load"></div>
     </div>
 </body>
 
@@ -79,13 +79,188 @@
 <script src="js/waterfall.js"></script>
 <script>
 
+/*
+1. 获取数据
+2. 把数据拼装成 dom 放到页面
+3. 使用瀑布流去拜访 dom 位置
+
+
+{
+	page: 2,
+	len: 10
+}
+
+function dosth
+1. 获取page=1 的 10条数据
+2. 把10条数据拼装成 dom 放到页面
+3. 使用瀑布流去摆放 dom 位置
+4. page++
+
+当lead 出现在眼前的时候
+
+1. 获取page 的 10条数据
+2. 把10条数据拼装成 dom 放到页面
+3. 使用瀑布流去摆放 dom 位置
+4. page++
+
+*/
+
+
+
+	var curPage = 1,
+		perPageCount = 30;
+
+  	var colSumHeight = [];
+
+
+	var $target = $('#load');
+
+	$(window).on('scroll', function(){
+		checkShow();
+	});
+
+	checkShow();
+
+	function checkShow(){
+		if(isShow($target)){
+			dosth();
+		}
+	}
+
+	function isShow($el){
+	  var scrollH = $(window).scrollTop(),
+	  	  winH = $(window).height(),
+	  	  top = $el.offset().top;
+
+  	  if(top < winH + scrollH){
+  	  	return true;
+  	  }else{
+  	  	return false;
+  	  }
+	}
+
+
+	function dosth(){
+
+		$.ajax({
+			url: 'http://platform.sina.com.cn/slide/album_tech',
+			type: 'get',
+			dataType: 'jsonp',
+			jsonp:"jsoncallback",
+			data: {
+				app_key: '1271687855',
+				format:'json',
+				size:'img',
+				num: perPageCount,
+				page: curPage
+			},
+			success: function(ret){
+				if(ret.status.code == 0){
+					var dataArr = ret.data;
+
+					var $nodes = renderData(dataArr);
+					console.log($nodes);
+
+					render($nodes);
+
+
+					curPage++;
+				}
+			}
+
+		})
+	}
+
+
+	function renderData(items){
+		console.log(items);
+		var tpl = '',
+			$nodes;
+		for(var i = 0;i<items.length;i++){
+			tpl += '<li class="item">';
+			tpl += ' <a href="#" class="link"><img src="' + items[i].img_url + '" alt=""></a>';
+			tpl += ' <h4 class="header">'+ items[i].short_name +'</h4>';
+			tpl += '<p class="desp">'+items[i].short_intro+'</p>';
+			tpl += '</li>';
+		}
+		$nodes = $(tpl); 
+	
+		$('#pic-ct').append($nodes);
+		return $nodes;
+	}
+
+ 	function render($nodes){
+
+	  	var nodeWidth = $nodes.outerWidth(true),
+	 		colNum = parseInt($(window).width()/nodeWidth);
+
+	 	if(colSumHeight.length ==0){
+	 	 	for(var i = 0; i<colNum;i++){
+		 		colSumHeight.push(0);
+		 	}		
+	 	}
+
+	 	console.log(colSumHeight);
+
+
+					$nodes.each(function(){
+
+					})
+
+
+	 	$nodes.each(function(){
+	 		var $cur = $(this);
+
+	 		//colSumHeight = [100, 250, 80, 200]
+			$(this).find('img').on('load', function(){
+			
+		 		var idx = 0,
+		 			minSumHeight = colSumHeight[0];
+
+		 		for(var i=0;i<colSumHeight.length; i++){
+		 			if(colSumHeight[i] < minSumHeight){
+		 				idx = i;
+		 				minSumHeight = colSumHeight[i];
+		 			}
+		 		}
+
+		 		$cur.css({
+		 			left: nodeWidth*idx,
+		 			top: minSumHeight
+		 		});
+		 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
+				
+			})
+
+
+	 	});		
+ 	}
+
+ 	//render();
+
+ 	// $(window).on('resize', function(){
+ 	// 	render();
+ 	// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 var curPage = 1,
 	perPageCount = 30;
 
 WaterFall.init($('#pic-ct'));
 
 Exposure.init($('#load'),function(){
-	console.log('show')
 	getData(function(data){
 		var $nodes = renderData(data);
 		WaterFall.start($nodes);
@@ -131,6 +306,60 @@ function renderData(items){
 	$('#pic-ct').append($nodes);
 	return $nodes;
 }	
+
+*/
+
+
+/*
+
+	var ExposureTarget = (function(){
+
+		function bind($target, handler){
+
+			$(window).on('scroll', function(){
+				checkShow();
+			});
+
+			checkShow();
+
+			function checkShow(){
+				if(isShow($target)){
+					handler();
+				}
+			}
+
+			function isShow($el){
+			  var scrollH = $(window).scrollTop(),
+			  	  winH = $(window).height(),
+			  	  top = $el.offset().top;
+
+		  	  if(top < winH + scrollH){
+		  	  	return true;
+		  	  }else{
+		  	  	return false;
+		  	  }
+			}
+		}
+
+		return {
+			bind: bind
+		}
+	})();
+
+	ExposureTarget.bind($('#lead'), dosth);
+
+	function dosth(){
+
+	}
+
+*/
+
+
+
+
+
+
+
 
 
 </script>
