@@ -60,7 +60,6 @@
    <div class="panel">内容2</div>
    <div class="panel">内容3</div>
  </div> 
-
  <div class="mod-tab">
    <ul class="tabs">
      <li class="active">tab1</li>
@@ -75,22 +74,36 @@
 <script src="../util/util.js"></script>
 <script>
   
-var tabCt = document.getElementsByClassName('tabs')[0],
-    tabNodes = tabCt.children,
-    panelNodes = document.getElementsByClassName('panel');
-    
-Util.bind(tabCt, 'click', function(e){
-  var evt = Util.getEvent(e),
-      target = Util.getTarget(e),
-      index = Util.index(target);
-  if(index > -1){
-    Util.removeClass(tabNodes, 'active');
-    Util.addClass(target, 'active');
-    Util.removeClass(panelNodes, 'active');
-    Util.addClass(panelNodes[index], 'active');
-  }
 
-});
+function Tab(ct){
+  this.ct = ct;
+  this.tabCt = ct.querySelector('.tabs');
+  this.tabNodes = this.tabCt.children;
+  this.panelNodes = ct.querySelectorAll('.panel');
+
+  this.bind();
+}
+Tab.prototype.bind = function(){
+  var me = this;
+  Util.bind(me.tabCt, 'click', function(e){
+    var evt = Util.getEvent(e),
+        target = Util.getTarget(e),
+        index = Util.index(target);
+    if(index > -1){
+      Util.removeClass(me.tabNodes, 'active');
+      Util.addClass(target, 'active');
+      Util.removeClass(me.panelNodes, 'active');
+      Util.addClass(me.panelNodes[index], 'active');
+    }
+  }); 
+}
+
+
+
+new Tab(document.querySelectorAll('.mod-tab')[0])
+new Tab(document.querySelectorAll('.mod-tab')[1])
+
+
 
   
 </script>
