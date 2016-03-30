@@ -37,6 +37,7 @@
 		margin: 10px;
 		border: 1px solid #DFDFDF;
 		background: #FFF;
+		opacity: 0;
 		transition: all .8s;
 	}
 	#pic-ct .item img{
@@ -56,6 +57,7 @@
 	}
 	#load{
 		visibility: hidden;
+		height: 20px;
 	}
 	.hide{
 		display: none;
@@ -197,9 +199,12 @@ function waterFallPlace($nodes){
 
 		$cur.css({
 			left: nodeWidth*idx,
-			top: minSumHeight
+			top: minSumHeight,
+			opacity: 1
 		});
+
 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
+		$('#pic-ct').height(Math.max.apply(null,colSumHeight));
 	});
 
 }
