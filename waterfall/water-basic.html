@@ -67,7 +67,7 @@
 	 			top: minSumHeight
 	 		});
 	 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
-	 	});		
+	 	});
  	}
 
  	render();
@@ -75,7 +75,11 @@
  	$(window).on('resize', function(){
  		render();
  	})
- 	 
+
+
+
+  //方法2， 通过闭包进行私有化封装
+
 
  	var water = (function($){
 
@@ -89,7 +93,7 @@
 		 		colSumHeight.push(0);
 		 	}
 
-		 	jQuery('.item').each(function(){
+		 	$('.item').each(function(){
 		 		var $cur = $(this);
 
 		 		//colSumHeight = [100, 250, 80, 200]
@@ -109,7 +113,7 @@
 		 			top: minSumHeight
 		 		});
 		 		colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx];
-		 	});		
+		 	});
 	 	}
 
 	 	render();
@@ -122,12 +126,13 @@
  		return {
  			init: render
  		}
- 	})(jQuery) 
+ 	})(jQuery)
 
- 	water.init();
+ 	//water.init();
 
 
 
+// 方法3， 把功能都绑定到一个对象上
 
 	var WaterFall = {
 
@@ -192,7 +197,7 @@
 		}
 	}
 
-	WaterFall.init($('.content'));
+	//WaterFall.init($('.content'));
 
 
  });
@@ -227,7 +232,7 @@
 			<div class="item h2">
 				8
 			</div>
-<!--			<div class="item h1">
+    	<div class="item h1">
 				9
 			</div>
 			<div class="item h3">
@@ -245,12 +250,10 @@
 			<div class="item h2">
 				14
 			</div>
-		-->
-			<div id="load-more"></div>
 		</div>
 
 		<script type="text/javascript">
-			
+
 		// 	Exposure.every($('#load-more'), function(){
 		// 	  ajaxApend(function($els){
 		// 	  	WaterFall.init($els);
