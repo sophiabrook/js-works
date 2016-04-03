@@ -1,0 +1,20 @@
+#header {
+  color: #333333;
+  border-left: 1px;
+  border-right: 2px;
+}
+#header h1 {
+  color: #842210;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+#header .clearfix:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+#footer {
+  color: #114411;
+  border-color: #7d2717;
+  opacity: 0.5;
+}
