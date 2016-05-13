@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>pagination</title>
+  <style>
+  .layout {
+    width: 900px;
+    margin: 0 auto;
+  }
+
+  .pagination:after{
+    content: '';
+    display: block;
+    clear: both;
+  }
+  .pagination li{
+    float: left;
+    border: 1px solid #aaa;
+    border-right: none;
+    list-style: none;
+    min-width: 30px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    cursor: pointer;
+  }
+  .pagination li:first-child{
+    border-radius: 3px 0 0 3px;
+  }
+  .pagination li:last-child{
+    border-radius: 0 3px 3px 0;
+    border-right: 1px solid #aaa;
+  }
+
+  .pagination li.active{
+    background: #aaa;
+    color: #fff;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <div class="content">
+
+    </div>
+    <div class="pagination"></div>
+
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+      function Pagination(opts) {
+        this.init(opts);
+        this.render();
+        this.bind();
+
+      }
+      Pagination.prototype = {
+        init: function(opts) {
+          $.extend(this, opts);
+          this.pageIdx = 1;
+          this.pages = Math.ceil(this.totalLength / this.pageSize);
+        },
+
+        render: function() {
+          var html = '<li class="prev"><span>&laquo;</span></li>';
+          for(var i = 1; i<= this.pages; i++){
+            if(this.pageIdx === i){
+              html += '<li class="paging active" data-page='+ i +'> '+i+'</li>';
+            }else{
+
+              html += '<li class="paging" data-page='+ i+'>'+i+'</li>';
+            }
+          }
+          html += '<li class="next" ><span >&raquo;</span></li>';
+
+          this.ct.append(html);
+          this.onSelect && this.onSelect(1);
+        },
+
+        bind: function(){
+          var self = this,
+              $paging = this.ct.find('.paging');
+          $paging.on('click', function(){
+            $paging.removeClass('active');
+            self.pageIdx = parseInt($(this).attr('data-page'));
+            $(this).addClass('active');
+            self.onSelect && self.onSelect(self.pageIdx);
+          });
+          $('.prev').on('click', function(){
+            if(self.pageIdx == 1) return;
+            self.pageIdx--;
+            $paging.removeClass('active');
+            $paging.eq(self.pageIdx-1).addClass('active');
+            self.onSelect && self.onSelect(self.pageIdx);
+          })
+          $('.next').on('click', function(){
+            if(self.pageIdx == self.pages) return;
+            self.pageIdx++;
+            $paging.removeClass('active');
+            $paging.eq(self.pageIdx-1).addClass('active');
+            self.onSelect && self.onSelect(self.pageIdx);
+          })
+
+        }
+
+      }
+
+      new Pagination({
+        ct: $('.pagination'),
+        pageSize: 5,
+        totalLength: 50,
+        onSelect: selectPage
+      });
+
+      function selectPage(pageIdx) {
+        $.get('/getComments', {
+          page: pageIdx
+        }).done(function(comments) {
+          var htmls = '';
+          for (var i = 0; i < comments.length; i++) {
+            htmls += '<li>' + comments[i] + '</li>';
+          }
+          $('.content').html(htmls);
+        })
+      }
+    </script>
+</body>
+
+</html>
