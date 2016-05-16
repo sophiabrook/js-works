@@ -50,10 +50,87 @@
     <div class="content">
 
     </div>
-    <div class="pagination"></div>
+    <ul class="pagination" data-total=100 data-page-size=5>
+
+    </ul>
 
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
+
+
+    //
+    // function Pagination(opts){
+    //   this.init(opts);
+    //   this.render();
+    //   this.bind();
+    // }
+    // Pagination.prototype = {
+    //   init: function(opts){
+    //     $.extend(this, opts);
+    //     this.pages = Math.ceil(this.totalLen/this.pageSize);
+    //     this.pageIdx = 1;
+    //   },
+    //   render: function(){
+    //         var html = '<li class="prev"><span>&laquo;</span></li>';
+    //         for(var i = 1; i<= this.pages; i++){
+    //           if(this.pageIdx === i){
+    //             html += '<li class="paging active" data-page='+ i +'> '+i+'</li>';
+    //           }else{
+    //
+    //             html += '<li class="paging" data-page='+ i+'>'+i+'</li>';
+    //           }
+    //         }
+    //         html += '<li class="next" ><span >&raquo;</span></li>';
+    //
+    //         this.ct.append(html);
+    //         this.onSelect(1);
+    //   },
+    //   bind: function(){
+    //         var self = this,
+    //             $paging = this.ct.find('.paging');
+    //         $paging.on('click', function(){
+    //           $paging.removeClass('active');
+    //           self.pageIdx = parseInt($(this).attr('data-page'));
+    //           $(this).addClass('active');
+    //           self.onSelect(self.pageIdx);
+    //         });
+    //         $('.prev').on('click', function(){
+    //           if(self.pageIdx == 1) return;
+    //           self.pageIdx--;
+    //           $paging.removeClass('active');
+    //           $paging.eq(self.pageIdx-1).addClass('active');
+    //           self.onSelect && self.onSelect(self.pageIdx);
+    //         })
+    //         $('.next').on('click', function(){
+    //           if(self.pageIdx == self.pages) return;
+    //           self.pageIdx++;
+    //           $paging.removeClass('active');
+    //           $paging.eq(self.pageIdx-1).addClass('active');
+    //           self.onSelect && self.onSelect(self.pageIdx);
+    //         })
+    //   }
+    // }
+    //
+    // new Pagination({
+    //   ct: $('.pagination'),
+    //   pageSize: 5,
+    //   totalLen: 80,
+    //   onSelect: goPage
+    // });
+    //
+    // function goPage(pageIdx){
+    //   $.get('/getComments',{page: pageIdx}).done(function(comments){
+    //     var htmls = '';
+    //     //构造 html
+    //     $('.content').html(htmls)
+    //   })
+    // }
+    //
+
+
+
+
+
       function Pagination(opts) {
         this.init(opts);
         this.render();
