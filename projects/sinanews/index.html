@@ -1,0 +1,212 @@
+<!doctype html>
+<html>
+<head>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	<title>饥人谷</title>
+<style>
+		html,body,ul,li,p,div{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	ul,li{
+		list-style: none;
+	}
+
+  #doc{
+  	max-width: 900px;
+		margin: 0 auto;
+  }
+
+	.clearfix:after{
+		content: '';
+		display: block;
+		clear: both;
+	}
+
+	.pic-ct .item{
+		float: left;
+		padding: 0 0 10px 0;
+		width: 280px;
+		margin: 10px;
+		border: 1px solid #DFDFDF;
+		background: #FFF;
+		transition: all 0.4s;
+	}
+	.pic-ct .item>a{
+			display: block;
+	    margin: 10px;
+	    width: 260px;
+	    height: 260px;
+	    background-size: contain;
+	}
+	.pic-ct .item .header{
+		height: 25px;
+	    margin: 0 12px;
+	    border-bottom: 1px solid #DBDBDB;
+	}
+	.pic-ct .desp{
+		font-size: 12px;
+		line-height: 1.8;
+		height: 42px;
+	  margin: 10px 15px 0;
+	  color: #777371;
+	}
+
+	.pagination>li{
+		float: left;
+		border: 1px solid #ccc;
+		padding: 3px 5px;
+		border-radius: 3px;
+		margin: 10px;
+		cursor: pointer;
+	}
+	.pagination>li.active{
+		background-color: #ccc;
+	}
+
+	#cover{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255,255, 255, 0.8);
+		display: none;
+	}
+  .loading {
+    position: relative;
+    margin: 100px auto;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border-top: 10px solid #fff;
+    border-right: 10px solid #fff;
+    border-bottom: 10px solid #fff;
+    border-left: 10px solid #000;
+    animation: load 1.1s infinite linear;
+  }
+  @keyframes load {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+</style>
+</head>
+<body>
+	<div id="doc">
+		<ul class="pagination clearfix">
+			<li data-page=1>第1页</li>
+			<li data-page=2>第2页</li>
+			<li data-page=3>第3页</li>
+			<li data-page=4>第4页</li>
+		</ul>
+		<ul class="pic-ct clearfix">
+		</ul>		
+	</div>
+	<div id="cover">
+		<div class="loading"></div>
+	</div>
+
+
+<script>
+
+	init()
+
+	//用了事件代理
+	document.querySelector('.pagination').onclick = function(e){
+		var page = e.target.getAttribute('data-page')
+		if(page){  //如果没点到li上 page 是null
+			getAndRender(page)
+		}
+	}
+
+
+	//初始化，根据 url 中 page 的值定位到对应页面，如果没设置展示第1页
+	function init(){
+		var serach = location.search.replace(/^\?/,'').split('=');
+		if(serach[0] === 'page'){
+			getAndRender(serach[1])
+		}else{
+			getAndRender(1)
+		}
+	}
+
+	// 获取数据，并且渲染页面
+	function getAndRender(page){
+		showLoading()
+		getNews(page, function(ret){
+			renderNews(ret.data)  //渲染页面
+			hideLoading()
+			setUrl(page)          //设置 url
+			setPagingState(page)  //设置分页状态
+		})
+	}
+
+	function setUrl(page){
+		var url = location.pathname + '?page=' +  page
+		history.pushState({url: url, title: document.title}, document.title, url)
+	}
+
+	function setPagingState(page){
+		console.log(page)
+		var pageNodes = document.querySelectorAll('.pagination>li');
+		pageNodes.forEach(function(node){
+			node.classList.remove('active')
+		})
+		pageNodes[page-1].classList.add('active')
+	}
+
+
+	function getNews(page, onSuccess){
+		var url = 'http://photo.sina.cn/aj/index'
+		var data = {
+			page: page,
+			cate: 'recommend',
+			jsoncallback: '__onGetData__'
+		}
+		window.__onGetData__ = function(data){
+			onSuccess && onSuccess(data);
+		}
+
+		jsonp(url, data);
+
+		function jsonp(url, data){
+			var script = document.createElement('script')
+			var queryString = []
+			for(var key in data){
+				queryString.push( key + '='+ encodeURIComponent(data[key]) )
+			}
+			script.src = url + '?' + queryString.join('&')
+			document.head.appendChild(script)
+			document.head.removeChild(script)
+		}
+	}
+
+	function renderNews(items){
+		var tpl = '';
+		for(var i = 0;i<items.length;i++){
+			tpl += '<li class="item">';
+			tpl += ' <a href="'+ items[i].wap_url +'" class="link" style="background-image:url('+items[i].img_url+')"></a>';
+			tpl += ' <h4 class="header">'+ items[i].short_name +'</h4>';
+			tpl += '<p class="desp">'+items[i].short_intro+'</p>';
+			tpl += '</li>';
+		}
+		document.querySelector('.pic-ct').innerHTML = tpl;
+	}
+
+	function showLoading(){
+		document.querySelector('#cover').style.display = 'block';
+	}
+	function hideLoading(){
+		document.querySelector('#cover').style.display = 'none';
+	}
+
+
+</script>
+</body>
+</html>
