@@ -117,6 +117,10 @@
 <script>
 
 	init()
+	//处理返回数据
+	window.onpopstate = function(){
+		init()
+	}
 
 	//用了事件代理
 	document.querySelector('.pagination').onclick = function(e){
@@ -131,9 +135,9 @@
 	function init(){
 		var serach = location.search.replace(/^\?/,'').split('=');
 		if(serach[0] === 'page'){
-			getAndRender(serach[1])
+			initGetAndRender(serach[1])
 		}else{
-			getAndRender(1)
+			initGetAndRender(1)
 		}
 	}
 
@@ -147,6 +151,17 @@
 			setPagingState(page)  //设置分页状态
 		})
 	}
+
+	//初始化从url解析加载数据时不需要设置url了，否则返回会出错
+	function initGetAndRender(page){
+		showLoading()
+		getNews(page, function(ret){
+			renderNews(ret.data)  //渲染页面
+			hideLoading()         //设置 url
+			setPagingState(page)  //设置分页状态
+		})		
+	}
+
 
 	function setUrl(page){
 		var url = location.pathname + '?page=' +  page
